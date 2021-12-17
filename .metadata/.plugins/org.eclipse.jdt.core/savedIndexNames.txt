@@ -1,0 +1,3 @@
+INDEX VERSION 1.131+C:\Users\thomas\Documents\Travail\S9\advanced database\projet\2021bddra-equipe2-query\.metadata\.plugins\org.eclipse.jdt.core
+952803345.index
+3828029827.index

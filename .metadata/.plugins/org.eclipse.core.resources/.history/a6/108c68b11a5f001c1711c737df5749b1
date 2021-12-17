@@ -1,0 +1,8 @@
+package db.query;
+
+@Data
+public class QueryParser {
+	
+	private Query query;
+	
+}

@@ -1,0 +1,7 @@
+package db.query;
+
+import java.util.List;
+
+public class methodeQuery {
+	private List<String> data;
+}

@@ -1,0 +1,10 @@
+package db.query;
+
+import lombok.Data;
+
+@Data
+public class QueryParser {
+	
+	private Query query;
+	
+}
