@@ -1,0 +1,6 @@
+package db.query;
+
+public class Select {
+	private String tableName;
+	private Collection<String> fields;
+}
