@@ -1,0 +1,8 @@
+package db.query;
+
+public class InsertQuery {
+	
+	private String tableName;
+	private LocalDate date;
+	private String value;
+}

@@ -1,0 +1,45 @@
+package db.query;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import lombok.Data;
+
+
+public class QueryParser {
+
+	private String query;
+
+	public QueryParser(String s) {
+		this.query = s;
+	}
+
+	public String whatType(String query) {
+		Pattern selectPattern = Pattern.compile("select\\s+(.*?)\\s+from\\s+(.*?)(?:\\s+where\\s+(.*?))?$", Pattern.CASE_INSENSITIVE);
+		Matcher selectMatcher = selectPattern.matcher(query);
+		System.out.println(selectMatcher.matches());
+		System.out.println(selectMatcher.groupCount());
+		
+		System.out.println(selectMatcher.group(0));
+		System.out.println(selectMatcher.group(1));
+		System.out.println(selectMatcher.group(2));
+		System.out.println(selectMatcher.group(3));
+		return "ok";
+	}
+
+	
+}
+
+
+//String regex = "^select\\s+(.*?)\\s+from\\s+(.*?)";
+//String regex2 = "^\\s*select\\s+(.*?)\\s+from\\s+(.*?)(?:\\s+(?:where)\\s+(.*?))?$";
+//Pattern selectPattern = Pattern.compile(regex2,Pattern.CASE_INSENSITIVE);
+//Matcher selectMatcher = selectPattern.matcher(query);
+
+
+
+//if(selectMatcher.group(1).toLowerCase()=="select") {
+//	return "OK";
+//}else {
+//	return "fail";
+//}

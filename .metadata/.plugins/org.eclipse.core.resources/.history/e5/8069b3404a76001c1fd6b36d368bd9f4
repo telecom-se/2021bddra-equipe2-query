@@ -1,0 +1,10 @@
+package db.query;
+
+import java.time.LocalDate;
+
+public class InsertQuery {
+	
+	private String tableName;
+	private LocalDate date;
+	private String value;
+}

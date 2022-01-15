@@ -1,0 +1,12 @@
+package db.query;
+
+import java.util.Collection;
+
+import lombok.Data;
+
+@Data
+public class Select {
+	private String tableName;
+	private Collection<String> fields;
+	private String condition;
+}

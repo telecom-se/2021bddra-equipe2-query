@@ -1,0 +1,29 @@
+package db.query;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import lombok.Data;
+
+@Data
+public class QueryParser {
+
+	private String query;
+
+	public QueryParser(String s) {
+		this.query = s;
+	}
+
+	public String whatType(String query) {
+		String regex = "select\\s+(.*?)\\s+from\\s+(.*?)";
+		Pattern selectPattern = Pattern.compile(regex);
+		Matcher selectMatcher = selectPattern.matcher(query);
+		if(selectMatcher.group(1).toLowerCase()=="select") {
+			return "OK";
+		}else {
+			return "fail"
+		}
+	}
+
+	
+}

@@ -1,0 +1,8 @@
+package db.query;
+
+public class Constants {
+	static final int DOUBLE_QUOTE_CHARACTER = '"';
+	static final int STAR_CHARACTER = '*';
+	static final int COMMA_CHARACTER = ',';
+	static final int SEMICOLON_CHARACTER = ';';
+}

@@ -1,0 +1,43 @@
+package db.query;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import lombok.Data;
+
+
+public class QueryParser {
+
+	public Matcher queryType(String query) {
+		
+		Pattern selectPattern = Pattern.compile("select\\s+(.*?)\\s+from\\s+(.*?)(?:\\s+where\\s+(.*?))?", Pattern.CASE_INSENSITIVE);
+		Matcher selectMatcher = selectPattern.matcher(query);
+		
+		Pattern insertPattern = Pattern.compile("insert\\s+into\\s+(.*?)\\s+values\\s+(.*?)", Pattern.CASE_INSENSITIVE);
+		Matcher insertMatcher = insertPattern.matcher(query);
+		
+		System.out.println(selectMatcher.groupCount());
+		System.out.println(insertMatcher.groupCount());
+		
+		return selectMatcher;
+	}
+
+	
+}
+
+//SELECT *
+//SELECT champ
+//SELECT champ1,champ2
+
+// \\s*(.*?)((?:\\s|,+(.*?))?
+
+//char[] delimiters = new [] {','};
+
+//INSERT INTO table (col1,col2,...)
+//INSERT INTO table (col1)
+//INSERT INTO table (col1,col2) VALUES ("val1","val2")
+//INSERT INTO
+
+//		String query2 = "col1  ,  col2";
+//String[] res = query2.split("\\s*,\\s*");
+//System.out.println(res[0] +":" +res[1]+":");

@@ -1,0 +1,83 @@
+package db.query;
+
+import java.util.Collection;
+import java.util.*;
+import java.io.*;
+
+import lombok.Data;
+
+@Data
+public class QueryParser {
+
+	private Query query;
+	private Collection<String> keywords;
+
+	public Object parseQueryType(String query) throws IOException {
+
+		StreamTokenizer tok = new StreamTokenizer(new StringReader(query));
+		tok.lowerCaseMode(true);
+		tok.nextToken();
+
+		switch (tok.sval) {
+			case "select": {
+				
+				Select selectObject = new Select();
+				System.out.println( "-----" + selectObject.getFields());
+				while (tok.sval != "from" || tok.nextToken() != StreamTokenizer.TT_EOF) {
+					tok.nextToken();
+
+					System.out.println(tok.sval);
+
+					if (tok.ttype == Constants.STAR_CHARACTER) {
+						selectObject.addField("all");
+					} else if (tok.ttype == StreamTokenizer.TT_WORD) {
+						selectObject.addField(tok.sval);
+					} else if (tok.ttype == Constants.COMMA_CHARACTER) {
+						System.out.println(",");
+					} else {
+						
+					}
+					
+					
+				}
+				
+				System.out.println( "-----" + selectObject.getFields());
+				
+				break;
+			}
+			case "insert": {
+				System.out.println("insert");
+				break;
+			}
+			case "create": {
+				System.out.println("create");
+				break;
+			}
+			case "delete": {
+				System.out.println("delete");
+				break;
+			}
+
+		}
+
+		return tok;
+	}
+}
+
+//System.out.println(tok.sval);
+//
+//		while (tok.nextToken() != StreamTokenizer.TT_EOF) {
+//
+//			if (tok.ttype == StreamTokenizer.TT_WORD) {
+//				System.out.println(tok.sval);
+//			} else if (tok.ttype == Constants.STAR_CHARACTER) {
+//				System.out.println("*");
+//			} else if (tok.ttype == Constants.COMMA_CHARACTER) {
+//				System.out.println(tok.sval);
+//				System.out.println(",");
+//			} else if (tok.ttype == Constants.SEMICOLON_CHARACTER) {
+//				System.out.println(tok.sval);
+//				System.out.println(";");
+//			}
+//
+//		}

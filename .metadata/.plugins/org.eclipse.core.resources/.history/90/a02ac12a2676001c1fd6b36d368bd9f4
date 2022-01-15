@@ -1,0 +1,12 @@
+package db.query;
+
+public class Main {
+
+	public static void main(String[] args) {
+		String query = "SELECT * FROM db1.table2 where date=3;";
+		QueryParser queryparser = new QueryParser(query);
+		System.out.println(queryparser.whatType(query));
+
+	}
+
+}

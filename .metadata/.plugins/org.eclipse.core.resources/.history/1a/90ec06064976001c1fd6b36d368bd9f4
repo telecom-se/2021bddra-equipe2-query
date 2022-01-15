@@ -1,0 +1,18 @@
+package db.query;
+
+public class Main {
+
+	public static void main(String[] args) {
+		String querySelect = "SELECT * FROM db1.table2 where date=3;";
+		String queryInsert = "INSERT INTO table1 VALUES (12/12/12,32)";
+		String queryFail = "GRT INTO table1 VALUES (12/12/12,32)";
+		QueryParser queryparser = new QueryParser();
+		System.out.println(queryparser.queryType(querySelect));
+		System.out.println(queryparser.selectParser(querySelect));
+
+		
+		
+
+	}
+
+}
