@@ -1,0 +1,11 @@
+package db.query;
+
+import java.util.Collection;
+
+import lombok.Data;
+
+@Data
+public class AndCondition {
+	private Collection<Condition> conditions;
+
+}

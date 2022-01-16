@@ -1,0 +1,14 @@
+package db.query;
+
+import java.util.Collection;
+
+import lombok.Data;
+
+@Data
+public class OrCondition {
+	private Collection<Condition> conditions;
+	
+	public OrCondition(Collection<Condition> conditions) {
+		this.conditions=conditions;
+	}
+}

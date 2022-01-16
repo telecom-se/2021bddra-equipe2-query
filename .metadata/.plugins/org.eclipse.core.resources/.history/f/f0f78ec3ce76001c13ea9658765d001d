@@ -1,0 +1,8 @@
+package db.query;
+
+import lombok.Data;
+
+@Data
+public class OrCondition {
+	private Collection<Condition> conditions;
+}

@@ -114,8 +114,8 @@ public class QueryParser {
 			return null;
 		}
 
-		//TODO verifier que la valeur est un int32/int64
-		
+		// TODO verifier que la valeur est un int32/int64
+
 		Timestamp timestamp = null;
 		String value = values[1];
 
@@ -135,9 +135,133 @@ public class QueryParser {
 		return myInsert;
 	}
 
-	public Condition conditionParser(String condition){
+	public Condition conditionParser(String condition) {
 		
+		//verification du bon nombre d'éléments
+		String[] conditionElement = condition.toLowerCase().split("\\s*+(<|>|=|!=|<=|>=)+\\s*");
+		
+		if(conditionElement.length!=2) {
+			System.out.println("bad condition request : " + condition);
+			return null;
+		}
+		
+		// trouver l'opération
+		Operator operator = null;
+		
+		Pattern conditionPattern = Pattern.compile("(.*?)\\s*+(<|>|=|!=|<=|>=)\\s*+(.*?)", Pattern.CASE_INSENSITIVE);
+		Matcher conditionMatcher = conditionPattern.matcher(condition);
+
+		if (!conditionMatcher.matches()) {
+			System.out.println("bad condition request : " + condition);
+			return null;
+		}
+		
+		if(conditionMatcher.group(2)==null) {
+			System.out.println("bad operator");
+			return null;
+		}
+		
+		switch (conditionMatcher.group(2).toString()) {
+		case "=": {
+			operator = Operator.OPERATOR_EQUAL;
+			break;
+		}
+		case "!=": {
+			operator = Operator.OPERATOR_DIFFERENT;
+			break;
+		}
+		case "<=": {
+			operator = Operator.OPERATOR_LOWER_OR_EQUAL;
+			break;
+		}
+		case ">=": {
+			operator = Operator.OPERATOR_HIGHER_OR_EQUAL;
+			break;
+		}
+		case "<": {
+			operator = Operator.OPERATOR_LOWER;
+			break;
+		}
+		case ">": {
+			operator = Operator.OPERATOR_HIGHER;
+			break;
+		}
+		}
+
+		if (operator == null) {
+			System.out.println("bad operator");
+			return null;
+		}
+		
+		// trouver les champs
+		if (conditionElement[0].isEmpty()) {
+			System.out.println("bad condition request : " + condition);
+			return null;
+		}
+
+		String champ1 = conditionElement[0].toString();
+
+		if (conditionElement[1].isEmpty()) {
+			System.out.println("bad condition request : " + condition);
+			return null;
+		}
+
+		String champ2 = conditionElement[1].toString();
+		
+		// Enregistrement de la condition
+		Condition returnCondition = new Condition();
+		returnCondition.setField1(champ1);
+		returnCondition.setField2(champ2);
+		returnCondition.setOperator(operator);
+
+		return returnCondition;
 	}
+
+	public Object andOrParser(String conditions) {
+
+		// Verifier qu'il y a qu'un ou 0 "and" ou "or
+		String[] andOrConditions = conditions.toLowerCase().split("\\s*+(and|or)+\\s*");
+
+		if (andOrConditions.length > 2) {
+			System.out.println("too many arguments");
+			return null;
+		}
+		if (andOrConditions.length < 1) {
+			System.out.println("bad arguments");
+			return null;
+		}
+		
+		// trouver si c'est "and" ou "or"
+		String andOrCondition = null;
+		if (conditions.toLowerCase().contains(" and ")) {
+			andOrCondition = "and";
+		}
+		if (conditions.toLowerCase().contains(" or ")) {
+			andOrCondition = "or";
+		}
+
+		// Si il y a pas de "and" ou "or" on creer seulement un condition
+		if (andOrCondition == null) {
+			Condition condition = conditionParser(andOrConditions[0].toString());
+			if (condition != null) {
+				return condition;
+			} else {
+				return null;
+			}
+		}
+
+		//Sinon on enregistre un condition de type "and" ou "or"
+		Condition condition1 = conditionParser(andOrConditions[0].toString());
+		Condition condition2 = conditionParser(andOrConditions[1].toString());
+
+		if (andOrCondition == "or" && condition1 != null && condition2 != null) {
+			return new OrCondition(condition1, condition2);
+		} else if (andOrCondition == "and" && condition1 != null && condition2 != null) {
+			return new AndCondition(condition1, condition2);
+		}
+
+		return null;
+	}
+
 	
 }
-

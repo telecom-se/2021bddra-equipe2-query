@@ -1,0 +1,8 @@
+package db.query;
+
+public class Condition {
+
+	private String field1;
+	private String field2;
+	private Operator operator;
+}

@@ -10,12 +10,18 @@ public class Main {
 		String queryInsert2 = "INSERT INTO table1 VALUES (null,32);";
 		String queryInsertFail = "INSERT INTO  VALUES 12/12/12 13:56:12,32;";
 		
+		String condition = "timestamp = 1223-12-03 12:59:36";
+		
+		String conditions = "timestamp = 1223-12-03 12:59:36 and timestamp = 1223-12-03 12:59:59";
+		String conditionsFail = "timestamp = 1223-12-03 12:59:36 and timestamp = 1223-12-03 12:59:59 ";
 		
 		String queryFail = "GRT INTO table1 VALUES (12/12/12,32)";
 		QueryParser queryparser = new QueryParser();
 		System.out.println(queryparser.queryType(querySelect));
 		System.out.println(queryparser.selectParser(querySelectFail));
 		System.out.println(queryparser.insertParser(queryInsert));
+		System.out.println(queryparser.conditionParser(condition));
+		System.out.println(queryparser.andOrParser(conditionsFail));
 
 		
 		
