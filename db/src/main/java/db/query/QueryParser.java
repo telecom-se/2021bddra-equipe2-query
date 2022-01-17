@@ -4,19 +4,20 @@ import java.sql.Timestamp;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Error.QueryException;
 import lombok.Data;
 
 @Data
 public class QueryParser {
 
-	public String queryType(String query) {
+	public String queryType(String query) throws QueryException {
 
 		Pattern typePattern = Pattern.compile("(select|insert)+\\s+.*?", Pattern.CASE_INSENSITIVE);
 		Matcher typeMatcher = typePattern.matcher(query);
 
 		if (!typeMatcher.matches()) {
 			System.out.println("not good type request");
-			return null;
+			throw new QueryException("not good type request");
 		}
 
 		String type = typeMatcher.group(1).toLowerCase().toString();
@@ -33,33 +34,32 @@ public class QueryParser {
 		}
 		default: {
 			System.out.println("other type");
+			throw new QueryException("other type");
 		}
 		}
-
-		return null;
 	}
 
-	public SelectQuery selectParser(String query) {
+	public SelectQuery selectParser(String query) throws QueryException {
 
-		Pattern selectPattern = Pattern.compile("select\\s*+(.*?)\\s*+from\\s*+(.*?)(?:\\s*+where\\s*+(.*?))?;",
+		Pattern selectPattern = Pattern.compile("select\\s+(.*?)\\s*+from\\s*+(.*?)(?:\\s*+where\\s*+(.*?))?;",
 				Pattern.CASE_INSENSITIVE);
-		Matcher selectMatcher = selectPattern.matcher(query);
+		Matcher selectMatcher = selectPattern.matcher(query.toLowerCase());
 
 		if (!selectMatcher.matches()) {
 			System.out.println("bad select request");
-			return null;
+			throw new QueryException("not good type request");
 		}
 
 		if (selectMatcher.group(1).isEmpty()) {
 			System.out.println("no field");
-			return null;
+			throw new QueryException("no field");
 		}
 
 		String[] fields = selectMatcher.group(1).toString().split("\\s*,\\s*");
 
 		if (selectMatcher.group(2).isEmpty()) {
 			System.out.println("no table");
-			return null;
+			throw new QueryException("no table");
 		}
 
 		String table = selectMatcher.group(2).toString();
@@ -148,7 +148,7 @@ public class QueryParser {
 		// trouver l'opération
 		Operator operator = null;
 		
-		Pattern conditionPattern = Pattern.compile("(.*?)\\s*+(<|>|=|!=|<=|>=)\\s*+(.*?)", Pattern.CASE_INSENSITIVE);
+		Pattern conditionPattern = Pattern.compile("(.*?)\\s*+(!=|<=|>=|<|>|=)\\s*+(.*?)", Pattern.CASE_INSENSITIVE);
 		Matcher conditionMatcher = conditionPattern.matcher(condition);
 
 		if (!conditionMatcher.matches()) {
@@ -205,16 +205,39 @@ public class QueryParser {
 			System.out.println("bad condition request : " + condition);
 			return null;
 		}
-
-		String champ2 = conditionElement[1].toString();
 		
-		// Enregistrement de la condition
-		Condition returnCondition = new Condition();
-		returnCondition.setField1(champ1);
-		returnCondition.setField2(champ2);
-		returnCondition.setOperator(operator);
+		if(champ1.toString().equals("time")) {
+			try {
+				Timestamp.valueOf(conditionElement[1]);
+				
+				Condition returnCondition = new Condition();
+				returnCondition.setField1(champ1);
+				returnCondition.setField2(conditionElement[1].toString());
+				returnCondition.setOperator(operator);
+				return returnCondition;
+				
+			} catch (Exception e) {
+				System.out.println("bad timestamp");
+				return null;
+			}
+		}else if(champ1.toString().equals("temperature")) {
+			try {
+				Float.parseFloat(conditionElement[1]);
+				
+				Condition returnCondition = new Condition();
+				returnCondition.setField1(champ1);
+				returnCondition.setField2(conditionElement[1].toString());
+				returnCondition.setOperator(operator);
+				return returnCondition;
+				
+			} catch (Exception e) {
+				System.out.println("bad temperature");
+				return null;
+			}
+		}else {
+			return null;
+		}
 
-		return returnCondition;
 	}
 
 	public Object andOrParser(String conditions) {
