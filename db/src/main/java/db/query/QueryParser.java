@@ -12,7 +12,7 @@ public class QueryParser {
 
 	public String queryType(String query) throws QueryException {
 
-		Pattern typePattern = Pattern.compile("(select|insert)+\\s+.*?", Pattern.CASE_INSENSITIVE);
+		Pattern typePattern = Pattern.compile("(select|insert|create|delete|drop)+\\s+.*?", Pattern.CASE_INSENSITIVE);
 		Matcher typeMatcher = typePattern.matcher(query);
 
 		if (!typeMatcher.matches()) {
@@ -31,6 +31,18 @@ public class QueryParser {
 		case "insert": {
 			System.out.println("insert");
 			return "insert";
+		}
+		case "create": {
+			System.out.println("create");
+			return "create";
+		}
+		case "delete": {
+			System.out.println("delete");
+			return "delete";
+		}
+		case "drop": {
+			System.out.println("drop");
+			return "drop";
 		}
 		default: {
 			System.out.println("other type");
@@ -134,10 +146,85 @@ public class QueryParser {
 
 		return myInsert;
 	}
+	
+	public CreateQuery createParser(String query) {
+
+		Pattern createPattern = Pattern.compile("create\\s*+table\\s*+(.*?);",
+				Pattern.CASE_INSENSITIVE);
+		Matcher createMatcher = createPattern.matcher(query.toLowerCase());
+		if (!createMatcher.matches()) {
+			System.out.println("bad create request");
+			return null;
+		}
+
+		if (createMatcher.group(1).isEmpty()) {
+			System.out.println("no field");
+			return null;
+		}
+
+		CreateQuery myCreate = new CreateQuery(createMatcher.group(1));
+		return myCreate;
+
+	}
+	
+	public DropQuery dropParser(String query) {
+
+		Pattern dropPattern = Pattern.compile("drop\\s*+table\\s*+(.*?);",
+				Pattern.CASE_INSENSITIVE);
+		Matcher dropMatcher = dropPattern.matcher(query.toLowerCase());
+		if (!dropMatcher.matches()) {
+			System.out.println("bad drop request");
+			return null;
+		}
+
+		if (dropMatcher.group(1).isEmpty()) {
+			System.out.println("no field");
+			return null;
+		}
+
+		DropQuery myDrop = new DropQuery(dropMatcher.group(1));
+		return myDrop;
+
+	}
+	
+	public DeleteQuery deleteParser(String query) {
+
+		Pattern deletePattern = Pattern.compile("delete\\s*+from\\s*+(.*?)(?:\\s*+where\\s*+(.*?))?;",
+				Pattern.CASE_INSENSITIVE);
+		Matcher deleteMatcher = deletePattern.matcher(query);
+
+		if (!deleteMatcher.matches()) {
+			System.out.println("bad delete request");
+			return null;
+		}
+
+		if (deleteMatcher.group(1).isEmpty()) {
+			System.out.println("no field");
+			return null;
+		}
+
+
+		if (deleteMatcher.group(2).isEmpty()) {
+			System.out.println("no table");
+			return null;
+		}
+
+		String table = deleteMatcher.group(1).toString();
+
+		String condition = null;
+		if (!deleteMatcher.group(2).isEmpty()) {
+			condition = deleteMatcher.group(2).toString();
+		}
+
+		DeleteQuery myDelete = new DeleteQuery(deleteMatcher.group(1), deleteMatcher.group(2));
+
+		return myDelete;
+
+	}
 
 	public Condition conditionParser(String condition) {
 		
-		//verification du bon nombre d'éléments
+		//verification du bon nombre d'ï¿½lï¿½ments
 		String[] conditionElement = condition.toLowerCase().split("\\s*+(<|>|=|!=|<=|>=)+\\s*");
 		
 		if(conditionElement.length!=2) {
@@ -145,7 +232,7 @@ public class QueryParser {
 			return null;
 		}
 		
-		// trouver l'opération
+		// trouver l'opï¿½ration
 		Operator operator = null;
 		
 		Pattern conditionPattern = Pattern.compile("(.*?)\\s*+(!=|<=|>=|<|>|=)\\s*+(.*?)", Pattern.CASE_INSENSITIVE);

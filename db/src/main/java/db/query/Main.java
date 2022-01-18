@@ -12,6 +12,15 @@ public class Main {
 		String queryInsert2 = "INSERT INTO table1 VALUES (null,32);";
 		String queryInsertFail = "INSERT INTO  VALUES 12/12/12 13:56:12,32;";
 		
+		String queryCreate = "CREATE TABLE db1.table2;";
+		String queryCreateFail = "CREATE hy  ,  ur FROM table  where date=3;";
+		
+		String queryDrop = "DROP TABLE db1.table2;";
+		String queryDropFail = "DROP hy  ,  ur FROM table  where date=3;";
+		
+		String queryDelete = "DELETE FROM db1.table2 where date=3;";
+		String queryDeleteFail = "DELETE hy  ,  ur FROM table  where date=3;";
+		
 		String condition = "time = 2016-12-03 12:59:36";
 		
 		String conditions = "time != 1223-12-03 12:59:36 and time <= 1223-12-03 12:59:59";
@@ -26,6 +35,15 @@ public class Main {
 		System.out.println(queryparser.conditionParser(condition));
 		System.out.println(queryparser.andOrParser(conditions));
 		System.out.println(queryparser.andOrParser(conditionsFail));
+		System.out.println(queryparser.queryType(queryCreate));
+		System.out.println(queryparser.createParser(queryCreateFail));
+		System.out.println(queryparser.createParser(queryCreate));
+		System.out.println(queryparser.queryType(queryDelete));
+		System.out.println(queryparser.deleteParser(queryDeleteFail));
+		System.out.println(queryparser.deleteParser(queryDelete));
+		System.out.println(queryparser.queryType(queryDrop));
+		System.out.println(queryparser.dropParser(queryDropFail));
+		System.out.println(queryparser.dropParser(queryDrop));
 
 		
 		
