@@ -86,8 +86,8 @@ public class QueryParser {
 		for (int i = 0; i < fields.length; i++) {
 			mySelect.addField(fields[i]);
 		}
-		mySelect.setDbName(table.split(".")[0]);
-		mySelect.setTableName(table.split(".")[1]);
+		mySelect.setDbName(table.split("\\.")[0]);
+		mySelect.setTableName(table.split("\\.")[1]);
 		mySelect.setConditions(condition);
 
 		return mySelect;
@@ -141,8 +141,8 @@ public class QueryParser {
 		}
 
 		InsertQuery myInsert = new InsertQuery();
-		myInsert.setDbName(table.split(".")[0]);
-		myInsert.setTableName(table.split(".")[1]);
+		myInsert.setDbName(table.split("\\.")[0]);
+		myInsert.setTableName(table.split("\\.")[1]);
 
 		myInsert.setDate(timestamp);
 		myInsert.setValue(value);
