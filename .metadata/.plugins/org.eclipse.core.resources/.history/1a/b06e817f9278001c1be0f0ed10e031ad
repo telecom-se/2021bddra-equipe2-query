@@ -64,9 +64,9 @@ public class QueryParser {
 
 		String table = selectMatcher.group(2).toString();
 
-		String conditions = null;
+		String condition = null;
 		if (!selectMatcher.group(3).isEmpty()) {
-			conditions = selectMatcher.group(3).toString();
+			condition = selectMatcher.group(3).toString();
 		}
 
 		SelectQuery mySelect = new SelectQuery();
@@ -74,19 +74,7 @@ public class QueryParser {
 			mySelect.addField(fields[i]);
 		}
 		mySelect.setTableName(table);
-
-		Object resultCondition = andOrParser(conditions);
-
-		if (resultCondition instanceof AndCondition) {
-			mySelect.setAndConditions((AndCondition)resultCondition);
-		} else if (resultCondition instanceof OrCondition) {
-			mySelect.setOrConditions((OrCondition)resultCondition);
-		} else if (resultCondition instanceof Condition) {
-			mySelect.setCondition((Condition)resultCondition);
-		} else {
-			System.out.println("ici");
-			return null;
-		}
+		mySelect.setConditions(condition);
 
 		return mySelect;
 

@@ -74,19 +74,8 @@ public class QueryParser {
 			mySelect.addField(fields[i]);
 		}
 		mySelect.setTableName(table);
-
+		
 		Object resultCondition = andOrParser(conditions);
-
-		if (resultCondition instanceof AndCondition) {
-			mySelect.setAndConditions((AndCondition)resultCondition);
-		} else if (resultCondition instanceof OrCondition) {
-			mySelect.setOrConditions((OrCondition)resultCondition);
-		} else if (resultCondition instanceof Condition) {
-			mySelect.setCondition((Condition)resultCondition);
-		} else {
-			System.out.println("ici");
-			return null;
-		}
 
 		return mySelect;
 
