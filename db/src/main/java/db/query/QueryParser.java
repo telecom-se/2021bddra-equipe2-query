@@ -13,7 +13,7 @@ public class QueryParser {
 
 	public String queryType(String query) throws QueryException {
 
-		Pattern typePattern = Pattern.compile("(select|insert|create|delete|drop)+\\s+.*?", Pattern.CASE_INSENSITIVE);
+		Pattern typePattern = Pattern.compile("(select|insert|create table|create database|delete|drop)+\\s+.*?", Pattern.CASE_INSENSITIVE);
 		Matcher typeMatcher = typePattern.matcher(query);
 
 		if (!typeMatcher.matches()) {
@@ -33,9 +33,13 @@ public class QueryParser {
 			System.out.println("insert");
 			return "insert";
 		}
-		case "create": {
-			System.out.println("create");
-			return "create";
+		case "create table": {
+			System.out.println("create table");
+			return "create table";
+		}
+		case "create database": {
+			System.out.println("create database");
+			return "create database";
 		}
 		case "delete": {
 			System.out.println("delete");
@@ -77,18 +81,20 @@ public class QueryParser {
 
 		String table = selectMatcher.group(2).toString();
 
+		SelectQuery mySelect = new SelectQuery();
 		String condition = null;
-		if (!selectMatcher.group(3).isEmpty()) {
+
+		if (selectMatcher.group(3) != null && !selectMatcher.group(3).trim().isEmpty()) {
 			condition = selectMatcher.group(3).toString();
+			mySelect.setConditions(condition);
 		}
 
-		SelectQuery mySelect = new SelectQuery();
 		for (int i = 0; i < fields.length; i++) {
 			mySelect.addField(fields[i]);
 		}
 		mySelect.setDbName(table.split("\\.")[0]);
 		mySelect.setTableName(table.split("\\.")[1]);
-		mySelect.setConditions(condition);
+
 
 		return mySelect;
 
@@ -159,14 +165,34 @@ public class QueryParser {
 			System.out.println("bad create request");
 			return null;
 		}
-
-		if (createMatcher.group(1).isEmpty()) {
-			System.out.println("no field");
+		System.out.println(createMatcher.group(1));
+		if (createMatcher.group(1).isEmpty() || !(createMatcher.group(1).contains("."))) {
+			System.out.println("no field -- need database.table");
 			return null;
 		}
 
 		CreateQuery myCreate = new CreateQuery(createMatcher.group(1));
 		return myCreate;
+
+	}
+	
+	public CreateDatabaseQuery createDatabaseParser(String query) {
+
+		Pattern createPattern = Pattern.compile("create\\s*+database\\s*+(.*?);",
+				Pattern.CASE_INSENSITIVE);
+		Matcher createMatcher = createPattern.matcher(query.toLowerCase());
+		if (!createMatcher.matches()) {
+			System.out.println("bad create request");
+			return null;
+		}
+		System.out.println(createMatcher.group(1));
+		if (createMatcher.group(1).isEmpty()) {
+			System.out.println("no database name ...");
+			return null;
+		}
+
+		CreateDatabaseQuery myCreateDatabase = new CreateDatabaseQuery(createMatcher.group(1));
+		return myCreateDatabase;
 
 	}
 	

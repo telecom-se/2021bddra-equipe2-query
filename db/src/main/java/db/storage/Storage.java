@@ -30,22 +30,19 @@ public class Storage {
 		{
 			return storeSelectQuery((SelectQuery)query);
 		}
+		
+		else if(query instanceof CreateQuery)
+		{
+			storeCreateSeriesQuery((CreateQuery)query);
+			return "Create Series query successful";
+		}
 
-		/*
-		 * else if(query instanceof CreateDatabaseQuery)
+		else if(query instanceof CreateDatabaseQuery)
 		{
 			storeCreateDatabaseQuery((CreateDatabaseQuery)query);
 			return "Create Database query successful";
 		}
 
-
-
-		else if(query instanceof CreateSeriesQuery)
-		{
-			storeCreateSeriesQuery((CreateSeriesQuery)query);
-			return "Create Series query successful";
-		}
-		*/
 
 		else
 		{
@@ -62,8 +59,8 @@ public class Storage {
 			Timestamp date;
 			String value;
 		*/
-
-        File file = new File("./db/" + query.getDbName() + query.getTableName() + ".txt");
+        File file = new File("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
+        
         List<String> lines = new ArrayList<String>(); 
 
         if (file.length() == 0) {
@@ -72,7 +69,7 @@ public class Storage {
         }
         lines.add(query.getDate().toString() + "," + query.getValue());
 
-        Path file2 = Paths.get("./db/" + query.getDbName() + query.getTableName() + ".txt");
+        Path file2 = Paths.get("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
         Files.write(file2, lines, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
 	}
 
@@ -86,7 +83,7 @@ public class Storage {
 
 		// Good way to read datas from a txt, line by line. check : https://stackoverflow.com/questions/5868369/how-can-i-read-a-large-text-file-line-by-line-using-java
 		SelectValues selectvalues = new SelectValues();
-		try (BufferedReader br = new BufferedReader(new FileReader("./db/" + query.getDbName() + query.getTableName() + ".txt"))) {
+		try (BufferedReader br = new BufferedReader(new FileReader("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt"))) {
 		    String line;
 		    String [] splittedLine;
 		    while ((line = br.readLine()) != null) {
@@ -99,16 +96,17 @@ public class Storage {
 
 
 		String firstElement = query.getFields().iterator().next();
-        if(firstElement == "*" || query.getFields().size() == 2) {
+		//System.out.println(firstElement);
+        if(firstElement.equals("*") || query.getFields().size() == 2) {
         	return selectvalues;
         }
 
-        else if (firstElement == "timestamp")
+        else if (firstElement.equals("timestamp"))
         {
         	return selectvalues.getTimestamps();
         }
 
-        else if (firstElement == "value")
+        else if (firstElement.equals("value"))
         {
         	return selectvalues.getValues();
         }
@@ -117,19 +115,11 @@ public class Storage {
         return null;
 
 	}
-/*
-	public void storeCreateDatabaseQuery(CreateDatabaseQuery query) throws StorageException{
-		// Create a directory at ./db/dbName
-		if (!(new File("./db/" + query.getDbName()).mkdirs())) {
-			System.out.println("Can't create directory. Already exist ?");
-			throw new QueryException("Can't create directory. Already exist ?");
-		}
-	}
-
-	public void storeCreateSeriesQuery(CreateSeriesQuery query) throws StorageException{
-		// Create a TXT file at ./db/dbName/seriesName.txt
+	
+	public void storeCreateSeriesQuery(CreateQuery query) throws StorageException{
+		// Create a TXT file at ./storeDB/dbName/seriesName.txt
 		try {
-			File myObj = new File("./db/" + query.getDbName() + query.getSeriesName() + ".txt");
+			File myObj = new File("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
 			if (myObj.createNewFile()) {
 				System.out.println("File created: " + myObj.getName());
 			} 
@@ -142,5 +132,13 @@ public class Storage {
 			e.printStackTrace();
 		}
 	}
-*/
+
+	public void storeCreateDatabaseQuery(CreateDatabaseQuery query) throws StorageException{
+		// Create a directory at ./storeDB/dbName
+		if (!(new File("./src/main/java/db/storeDB/" + query.getDbName()).mkdirs())) {
+			System.out.println("Can't create directory. Already exist ?");
+		}
+	}
+
+	
 }

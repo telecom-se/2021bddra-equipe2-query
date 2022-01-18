@@ -15,9 +15,9 @@ public class SelectQuery {
 	 
 	public SelectQuery(Collection<String> fields,String dbTableName,String conditions) {
 		this.fields=fields;
-		this.tableName= dbTableName.split(".")[1];
+		this.tableName= dbTableName.split("\\.")[1];
 		this.conditions=conditions;
-		this.dbName=dbTableName.split(".")[0];;
+		this.dbName=dbTableName.split("\\.")[0];;
 	}
 	
 	public SelectQuery() {
