@@ -1,6 +1,7 @@
 package db.query;
 
 import java.sql.Timestamp;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,9 +70,9 @@ public class QueryParser {
 
 		String[] fields = selectMatcher.group(1).toString().split("\\s*,\\s*");
 
-		if (selectMatcher.group(2).isEmpty()) {
-			System.out.println("no table");
-			throw new QueryException("no table");
+		if (selectMatcher.group(2).isEmpty() || !selectMatcher.group(2).contains(".")) {
+			System.out.println("no table / bad name. Need database.table");
+			throw new QueryException("no table / bad name. Need database.table");
 		}
 
 		String table = selectMatcher.group(2).toString();
@@ -85,7 +86,8 @@ public class QueryParser {
 		for (int i = 0; i < fields.length; i++) {
 			mySelect.addField(fields[i]);
 		}
-		mySelect.setTableName(table);
+		mySelect.setDbName(table.split(".")[0]);
+		mySelect.setTableName(table.split(".")[1]);
 		mySelect.setConditions(condition);
 
 		return mySelect;
@@ -103,8 +105,8 @@ public class QueryParser {
 			return null;
 		}
 
-		if (insertMatcher.group(1).isEmpty()) {
-			System.out.println("no table");
+		if (insertMatcher.group(1).isEmpty() || !insertMatcher.group(1).contains(".")) {
+			System.out.println("no table / bad name. Need database.table");
 			return null;
 		}
 
@@ -139,7 +141,8 @@ public class QueryParser {
 		}
 
 		InsertQuery myInsert = new InsertQuery();
-		myInsert.setTableName(table);
+		myInsert.setDbName(table.split(".")[0]);
+		myInsert.setTableName(table.split(".")[1]);
 
 		myInsert.setDate(timestamp);
 		myInsert.setValue(value);

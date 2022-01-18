@@ -10,12 +10,14 @@ public class SelectQuery {
 
 	private Collection<String> fields;
 	private String tableName;
+	private String dbName;
 	private String conditions;
 	 
-	public SelectQuery(Collection<String> fields,String tablename,String conditions) {
+	public SelectQuery(Collection<String> fields,String dbTableName,String conditions) {
 		this.fields=fields;
-		this.tableName=tablename;
+		this.tableName= dbTableName.split(".")[1];
 		this.conditions=conditions;
+		this.dbName=dbTableName.split(".")[0];;
 	}
 	
 	public SelectQuery() {
