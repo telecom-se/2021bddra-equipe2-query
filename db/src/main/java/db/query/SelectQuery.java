@@ -11,26 +11,16 @@ public class SelectQuery {
 	private Collection<String> fields;
 	private String tableName;
 	private String dbName;
+
 	private Condition condition;
 	private AndCondition andConditions;
 	private OrCondition orConditions;
-
+	
 	public SelectQuery() {
 		this.fields = new ArrayList<String>();
 	}
 
 	public void addField(String field) {
 		this.fields.add(field);
-	}
-
-	public SelectQuery(Collection<String> fields, String dbTableName, Condition condition, AndCondition andConditions,
-			OrCondition orConditions) {
-		super();
-		this.tableName= dbTableName.split("\\.")[1];
-		this.dbName=dbTableName.split("\\.")[0];;
-		this.fields = fields;
-		this.condition = condition;
-		this.orConditions = orConditions;
-		this.andConditions = andConditions;
 	}
 }

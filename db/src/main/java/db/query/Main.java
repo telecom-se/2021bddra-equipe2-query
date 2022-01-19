@@ -36,10 +36,9 @@ public class Main {
 
 		String queryFail = "GRT INTO table1 VALUES (12/12/12,32)";
 
+
 		System.out.println(queryparser.queryType(querySelect));
-
 		System.out.println(queryparser.queryType(querySelectFail));
-
 		System.out.println(queryparser.selectParser(querySelect));
 		System.out.println(queryparser.insertParser(queryInsert));
 		System.out.println(queryparser.conditionParser(condition));
@@ -54,6 +53,7 @@ public class Main {
 		System.out.println(queryparser.queryType(queryDrop));
 		System.out.println(queryparser.dropParser(queryDropFail));
 		System.out.println(queryparser.dropParser(queryDrop));
+
 
 		/*
 		 * EXEMPLE OF SEQUENCE : (create database --> create table --> insert --> select
@@ -87,6 +87,7 @@ public class Main {
 		 * System.out.println(queryparser.selectParser(querySelectTest2));
 		 * System.out.println(S.readDatas(queryparser.selectParser(querySelectTest2)));
 		 */
+
 	}
 
 }

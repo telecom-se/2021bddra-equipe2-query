@@ -82,6 +82,7 @@ public class QueryParser {
 		String table = selectMatcher.group(2).toString();
 
 		SelectQuery mySelect = new SelectQuery();
+
 		String conditions = null;
 
 		if (selectMatcher.group(3) != null && !selectMatcher.group(3).trim().isEmpty()) {
@@ -91,11 +92,6 @@ public class QueryParser {
 		for (int i = 0; i < fields.length; i++) {
 			mySelect.addField(fields[i]);
 		}
-		
-		mySelect.setDbName(table.split("\\.")[0]);
-		mySelect.setTableName(table.split("\\.")[1]);
-		
-		mySelect.setTableName(table);
 
 		Object resultCondition = andOrParser(conditions);
 
@@ -109,6 +105,11 @@ public class QueryParser {
 			System.out.println("ici");
 			return null;
 		}
+
+		mySelect.setDbName(table.split("\\.")[0]);
+		mySelect.setTableName(table.split("\\.")[1]);
+
+
 
 		return mySelect;
 
