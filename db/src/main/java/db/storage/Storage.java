@@ -83,18 +83,34 @@ public class Storage {
 
 		// Good way to read datas from a txt, line by line. check : https://stackoverflow.com/questions/5868369/how-can-i-read-a-large-text-file-line-by-line-using-java
 		SelectValues selectvalues = new SelectValues();
+		String col1 = "", col2 = "";
 		try (BufferedReader br = new BufferedReader(new FileReader("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt"))) {
 		    String line;
 		    String [] splittedLine;
+		    int i = 0;
 		    while ((line = br.readLine()) != null) {
-		       // process the line.
 		    	splittedLine = line.split(",");
-		    	selectvalues.getTimestamps().add(splittedLine[0]);
-		    	selectvalues.getValues().add(splittedLine[1]);
+		    	if (i!=0){
+			    	selectvalues.getTimestamps().add(splittedLine[0]);
+			    	selectvalues.getValues().add(splittedLine[1]);
+		    	}
+		    	else{
+		    		// The first line is containing the columns name
+		    		col1 = splittedLine[0];
+		    		col2 = splittedLine[1];
+		    		i=i+1;
+		    	}
 		    }
 		}
+		
+		// Avoid to read empty file
+		if (col1.equals("") || col2.equals("")) {
+			System.out.println("Selecting datas from an empty file. Returning 'File is empty'");
+			return "File is empty";
+		}
 
-
+		//Check if conditions name really exist by comparing condition.name with col1 or col2 and conditon.name2 with col1 or col2 for exemple
+		
 		String firstElement = query.getFields().iterator().next();
 		//System.out.println(firstElement);
         if(firstElement.equals("*") || query.getFields().size() == 2) {
