@@ -41,7 +41,6 @@ public class Storage {
 			return "Create Database query successful";
 		}
 
-
 		else
 		{
 			return "Query type not found.";
@@ -50,34 +49,46 @@ public class Storage {
 
 
 	public void storeInsertQuery(InsertQuery query) throws StorageException, IOException{
+		
+		// For delta delta compression we need to read the files and get the two firsts rows, if exist.
+		
+		SelectValues selectvalues = new SelectValues();
+	    int i = 0;
+		try (BufferedReader br = new BufferedReader(new FileReader("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt"))) {
+		    String line;
+		    String [] splittedLine;
 
-		/*
-		 *  String dbName;
-			String tableName;
-			Timestamp date;
-			String value;
-		*/
-        File file = new File("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
-        
+		    // We only want to get the first 3 rows.
+		    while ((line = br.readLine()) != null && i != 3) {
+		    	splittedLine = line.split(",");
+		    	selectvalues.getTimestamps().add(splittedLine[0]);
+		    	selectvalues.getValues().add(splittedLine[1]);
+		    	i=i+1;
+		    }
+		}
+		
+        Path file2 = Paths.get("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
         List<String> lines = new ArrayList<String>(); 
 
-        if (file.length() == 0) {
+        if (i == 0) {
             // File is empty so we need to add timestamp and value first :
         	lines.add("timestamp,value");
+        	lines.add(String.valueOf(query.getDate().getTime()) + "," + query.getValue());
         }
-        lines.add(query.getDate().toString() + "," + query.getValue());
-
-        Path file2 = Paths.get("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
-        Files.write(file2, lines, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        else if (i == 2){
+        	// Means we have only one data row 
+        	lines.add(String.valueOf(query.getDate().getTime() - Long.parseLong(selectvalues.getTimestamps().get(1)) ) + "," + query.getValue());
+        }
+        
+        else if (i==3) {
+        	// Now we have at least 2 datas rows so we can remove the 2 first values to our timestamp ! youhou
+        	lines.add((query.getDate().getTime() - Long.parseLong(selectvalues.getTimestamps().get(1)) - Long.parseLong(selectvalues.getTimestamps().get(2))) + "," + query.getValue());
+        }
+        
+        Files.write(file2, lines, StandardCharsets.UTF_8, StandardOpenOption.APPEND);        
 	}
 
 	public Object storeSelectQuery(SelectQuery query) throws StorageException, FileNotFoundException, IOException{
-		/* 
-			Collection<String> fields;
-			String dbName;
-			String tableName;
-			String conditions; 
-		*/ 
 
 		// Good way to read datas from a txt, line by line. check : https://stackoverflow.com/questions/5868369/how-can-i-read-a-large-text-file-line-by-line-using-java
 		SelectValues selectvalues = new SelectValues();
@@ -85,19 +96,39 @@ public class Storage {
 		try (BufferedReader br = new BufferedReader(new FileReader("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt"))) {
 		    String line;
 		    String [] splittedLine;
+		    Timestamp l_Timestamp;
+		    Long firstDataRow = (long) 0, secondDataRow = (long) 0, dataRow = (long) 0 ;
 		    int i = 0;
 		    while ((line = br.readLine()) != null) {
 		    	splittedLine = line.split(",");
-		    	if (i!=0){
-			    	selectvalues.getTimestamps().add(splittedLine[0]);
+	    		// Here we need to process all Timestamps since they are delta delta compressed and then convert them from Long to Timestamps
+		    	if (i>2) {
+		    		// Here we have already at least 2 datas rows. We need to add the first data row and the second
+		    		dataRow = Long.parseLong(splittedLine[0]) + firstDataRow + secondDataRow;
+		    		l_Timestamp = new Timestamp(dataRow);
+			    	selectvalues.getTimestamps().add(l_Timestamp.toString());
 			    	selectvalues.getValues().add(splittedLine[1]);
 		    	}
-		    	else{
+		    	else if (i==1){
+		    		// first data row :
+		    		firstDataRow = Long.parseLong(splittedLine[0]);
+		    		l_Timestamp = new Timestamp(firstDataRow);
+			    	selectvalues.getTimestamps().add(l_Timestamp.toString());
+			    	selectvalues.getValues().add(splittedLine[1]);
+		    	}
+		    	else if (i==2) {
+		    		// Second data row. Means we have to add the first data row :
+		    		secondDataRow = Long.parseLong(splittedLine[0]);
+		    		l_Timestamp = new Timestamp(secondDataRow + firstDataRow);
+			    	selectvalues.getTimestamps().add(l_Timestamp.toString());
+			    	selectvalues.getValues().add(splittedLine[1]);
+		    	}
+		    	else if (i==0){
 		    		// The first line is containing the columns name
 		    		col1 = splittedLine[0];
 		    		col2 = splittedLine[1];
-		    		i=i+1;
 		    	}
+	    		i=i+1;
 		    }
 		}
 		
