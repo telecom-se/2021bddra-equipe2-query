@@ -287,9 +287,9 @@ public class Storage {
 		           break;
 		   }
 			
-			for(int j = 0; j < indexToRemove.size() ; j++){
-				selectvalues.getTimestamps().remove(j);
-				selectvalues.getValues().remove(j);
+			for(int j = 0; j < indexToRemove.size()-1 ; j++){
+				selectvalues.getTimestamps().remove(indexToRemove.get(j));
+				selectvalues.getValues().remove(indexToRemove.get(j));
 			}
 	    	
 			switch(query.getOrConditions().getCondition2().getOperator()){				

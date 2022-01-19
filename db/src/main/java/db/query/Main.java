@@ -70,13 +70,13 @@ public class Main {
 		String queryCreateTable = "CREATE TABLE brichieeee.table2;";
 		System.out.println(queryparser.createParser(queryCreateTable));
 		S.readDatas(queryparser.createParser(queryCreateTable));
-		
+		/*
 		
 		// Exemple of INSERT INTO :
-		String queryInsertTest = "INSERT INTO brichieeee.table2 VALUES (2015-12-12 20:0:0,32);";
+		String queryInsertTest = "INSERT INTO brichieeee.table2 VALUES (2013-12-12 22:0:0,32);";
 		System.out.println(queryparser.insertParser(queryInsertTest));	
 		S.readDatas(queryparser.insertParser(queryInsertTest));
-		
+		*/
 		
 		// Exemple of SELECT : (where not implemented rn)
 		String querySelectTest = "SELECT * FROM brichieeee.table2;";
@@ -92,7 +92,7 @@ public class Main {
 		System.out.println(queryparser.selectParser(querySelectTest2));
 		System.out.println(S.readDatas(queryparser.selectParser(querySelectTest2)));
 		
-		String querySelectTest3 = "SELECT * FROM brichieeee.table2 WHERE time>=2012-12-13 13:56:19.0 OR temperature>34;";
+		String querySelectTest3 = "SELECT * FROM brichieeee.table2 WHERE time>=2013-12-12 23:00:00.0 OR temperature>30;";
 		System.out.println(queryparser.selectParser(querySelectTest3));	
 		System.out.println(S.readDatas(queryparser.selectParser(querySelectTest3)));
 		
