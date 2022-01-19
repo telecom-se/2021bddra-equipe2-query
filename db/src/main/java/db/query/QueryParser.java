@@ -87,28 +87,25 @@ public class QueryParser {
 
 		if (selectMatcher.group(3) != null && !selectMatcher.group(3).trim().isEmpty()) {
 			conditions = selectMatcher.group(3).toString();
+			Object resultCondition = andOrParser(conditions);
+
+			if (resultCondition instanceof AndCondition) {
+				mySelect.setAndConditions((AndCondition)resultCondition);
+			} else if (resultCondition instanceof OrCondition) {
+				mySelect.setOrConditions((OrCondition)resultCondition);
+			} else if (resultCondition instanceof Condition) {
+				mySelect.setCondition((Condition)resultCondition);
+			} else {
+				return null;
+			}
 		}
 
 		for (int i = 0; i < fields.length; i++) {
 			mySelect.addField(fields[i]);
 		}
 
-		Object resultCondition = andOrParser(conditions);
-
-		if (resultCondition instanceof AndCondition) {
-			mySelect.setAndConditions((AndCondition)resultCondition);
-		} else if (resultCondition instanceof OrCondition) {
-			mySelect.setOrConditions((OrCondition)resultCondition);
-		} else if (resultCondition instanceof Condition) {
-			mySelect.setCondition((Condition)resultCondition);
-		} else {
-			return null;
-		}
-
 		mySelect.setDbName(table.split("\\.")[0]);
 		mySelect.setTableName(table.split("\\.")[1]);
-
-
 
 		return mySelect;
 

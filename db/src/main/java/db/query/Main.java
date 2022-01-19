@@ -12,7 +12,7 @@ public class Main {
 
 		QueryParser queryparser = new QueryParser();
 		Storage S = new Storage();
-/*
+
 		String querySelect = "SELECT * FROM db1.table2 where date=3;";
 		String querySelectFail = "SELECTinsert hy  ,  ur FROM table  where date=3;";
 
@@ -54,13 +54,12 @@ public class Main {
 		System.out.println(queryparser.dropParser(queryDropFail));
 		System.out.println(queryparser.dropParser(queryDrop));
 
-		*/
-		
-		String querySelectTest = "SELECT * FROM brichieeee.table2 WHERE time>15156111;";
-		System.out.println(queryparser.selectParser(querySelectTest));	
-		
-/* EXEMPLE OF SEQUENCE : (create database --> create table --> insert --> select
 
+		/*
+
+		*/
+//EXEMPLE OF SEQUENCE : (create database --> create table --> insert --> select
+/*
 		// Exemple of create database :
 		String queryCreateDatabase = "CREATE DATABASE brichieeee;";
 		System.out.println(queryparser.queryType(queryCreateDatabase));
@@ -74,7 +73,7 @@ public class Main {
 		
 		
 		// Exemple of INSERT INTO :
-		String queryInsertTest = "INSERT INTO brichieeee.table2 VALUES (2012-12-13 13:56:12,32);";
+		String queryInsertTest = "INSERT INTO brichieeee.table2 VALUES (2012-12-13 13:56:13,32);";
 		System.out.println(queryparser.insertParser(queryInsertTest));	
 		S.readDatas(queryparser.insertParser(queryInsertTest));
 		
@@ -89,10 +88,14 @@ public class Main {
 			System.out.println(((SelectValues) a).getTimestamps());
 		}
 
-		String querySelectTest2 = "SELECT value FROM dbTest1.serieTest1;";
+		String querySelectTest2 = "SELECT temperature FROM brichieeee.table2;";
 		System.out.println(queryparser.selectParser(querySelectTest2));
 		System.out.println(S.readDatas(queryparser.selectParser(querySelectTest2)));
-*/
+		
+		String querySelectTest3 = "SELECT * FROM brichieeee.table2 WHERE time>=2012-12-13 13:56:19.0 OR temperature>34;";
+		System.out.println(queryparser.selectParser(querySelectTest3));	
+		System.out.println(S.readDatas(queryparser.selectParser(querySelectTest3)));
+		*/
 	}
 
 }

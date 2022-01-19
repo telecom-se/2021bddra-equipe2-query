@@ -10,13 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.sql.Timestamp;
 import Error.StorageException;
 import db.query.*;
 import lombok.Data;
-
 @Data
 public class Storage {
 	public Object readDatas(Object query) throws StorageException, IOException {
@@ -109,20 +107,204 @@ public class Storage {
 			return "File is empty";
 		}
 
-		//Check if conditions name really exist by comparing condition.name with col1 or col2 and conditon.name2 with col1 or col2 for exemple
+		// Condition checker
+
+		if (query.getCondition() != null)
+		{
+			System.out.println("Only one condition detected");
+			List<String> newTimes = new ArrayList<String>();
+			List<String> newValues = new ArrayList<String>();
+			switch(query.getCondition().getOperator()){				
+		   		case OPERATOR_EQUAL: 
+		   			selectCondEqual(selectvalues, query.getCondition(), newTimes, newValues);
+			       break;
+		       case OPERATOR_DIFFERENT:
+		    	   selectCondDiff(selectvalues, query.getCondition(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER:
+		    	   selectCondLow(selectvalues, query.getCondition(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER:
+		    	   selectCondHigh(selectvalues, query.getCondition(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getCondition(), newTimes, newValues);
+		    	   selectCondLow(selectvalues, query.getCondition(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getCondition(), newTimes, newValues);
+		    	   selectCondHigh(selectvalues, query.getCondition(), newTimes, newValues);
+		           break; 
+		       default:
+		    	   System.out.println("Choix incorrect");
+		           break;
+		   }
+	    	selectvalues.setTimestamps(newTimes);
+	    	selectvalues.setValues(newValues);
+		}
 		
+		else if (query.getAndConditions() != null)
+		{
+			// L'idée ici c'est de d'abord traiter la condition 1 puis on update les tableaux qui stock le résultat
+			//  ensuite on traite la conditon 2 sur le tableau précédemment rempli par les valeurs qui respectent la condition1. 
+			// en sortie on aura bien un tableau qui stock les valeurs qui respectent la condition 1 ET 2.
+			// Ca marche bien puisque c'est une condition ET donc il faut que les 2 soient vraies.
+			
+			System.out.println("And condition detected");
+			List<String> newTimes = new ArrayList<String>();
+			List<String> newValues = new ArrayList<String>();
+			switch(query.getAndConditions().getCondition1().getOperator()){				
+		   		case OPERATOR_EQUAL: 
+		   			selectCondEqual(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+			       break;
+		       case OPERATOR_DIFFERENT:
+		    	   selectCondDiff(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER:
+		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER:
+		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
+		           break; 
+		       default:
+		    	   System.out.println("Choix incorrect");
+		           break;
+		   }
+			
+			// Let's update our Timestamps and Values with the new values we get from the first condition.
+			selectvalues.getTimestamps().clear();
+			selectvalues.getValues().clear();
+			
+	    	selectvalues.getTimestamps().addAll(newTimes); // !! don't use setTimestamps(newTimes) as the next line newTimes.clear() will also clear Timestamps ... 
+	    	selectvalues.getValues().addAll(newValues);
+
+	    	newTimes.clear();
+	    	newValues.clear();
+	    	
+	    	// Now we gonna do the second condition with the new values
+	    	
+			switch(query.getAndConditions().getCondition2().getOperator()){				
+		   		case OPERATOR_EQUAL: 
+		   			selectCondEqual(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+			       break;
+		       case OPERATOR_DIFFERENT:
+		    	   selectCondDiff(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER:
+		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER:
+		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
+		           break; 
+		       default:
+		    	   System.out.println("Choix incorrect");
+		           break;
+			}
+			
+			selectvalues.setTimestamps(newTimes);
+			selectvalues.setValues(newValues);
+		}
+		
+		else if (query.getOrConditions() != null)
+		{
+			// Alors la la galère c'est que le OR peut prendre si au moins une condition est valide.
+			// Le truc c'est que si les deux conditions sont vraies, on va add deux fois la même valeurs ........
+			
+			System.out.println("And condition detected");
+			List<String> newTimes = new ArrayList<String>();
+			List<String> newValues = new ArrayList<String>();
+			List<Integer> indexToRemove = new ArrayList<Integer>();
+			switch(query.getOrConditions().getCondition1().getOperator()){				
+		   		case OPERATOR_EQUAL: 
+		   			indexToRemove.addAll(selectCondEqual(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+			       break;
+		       case OPERATOR_DIFFERENT:
+		    	   indexToRemove.addAll(selectCondDiff(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		           break;
+		       case OPERATOR_LOWER:
+		    	   indexToRemove.addAll(selectCondLow(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		           break;
+		       case OPERATOR_HIGHER:
+		    	   indexToRemove.addAll(selectCondHigh(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		           break;
+		       case OPERATOR_LOWER_OR_EQUAL:
+		    	   indexToRemove.addAll(selectCondEqual(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		    	   indexToRemove.addAll(selectCondLow(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		           break;
+		       case OPERATOR_HIGHER_OR_EQUAL:
+		    	   indexToRemove.addAll(selectCondEqual(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		    	   indexToRemove.addAll(selectCondHigh(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
+		           break; 
+		       default:
+		    	   System.out.println("Choix incorrect");
+		           break;
+		   }
+			
+			for(int j = 0; j < indexToRemove.size() ; j++){
+				selectvalues.getTimestamps().remove(j);
+				selectvalues.getValues().remove(j);
+			}
+	    	
+			switch(query.getOrConditions().getCondition2().getOperator()){				
+		   		case OPERATOR_EQUAL: 
+		   			selectCondEqual(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+			       break;
+		       case OPERATOR_DIFFERENT:
+		    	   selectCondDiff(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER:
+		    	   selectCondLow(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER:
+		    	   selectCondHigh(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_LOWER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		    	   selectCondLow(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		           break;
+		       case OPERATOR_HIGHER_OR_EQUAL:
+		    	   selectCondEqual(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		    	   selectCondHigh(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
+		           break; 
+		       default:
+		    	   System.out.println("Choix incorrect");
+		           break;
+			}
+			
+			selectvalues.setTimestamps(newTimes);
+			selectvalues.setValues(newValues);
+		}
+		
+		
+		// Returning the right element according to what the user has selected (eg time or temperature)
 		String firstElement = query.getFields().iterator().next();
 		//System.out.println(firstElement);
         if(firstElement.equals("*") || query.getFields().size() == 2) {
         	return selectvalues;
         }
 
-        else if (firstElement.equals("timestamp"))
+        else if (firstElement.equals("time"))
         {
         	return selectvalues.getTimestamps();
         }
 
-        else if (firstElement.equals("value"))
+        else if (firstElement.equals("temperature"))
         {
         	return selectvalues.getValues();
         }
@@ -155,6 +337,100 @@ public class Storage {
 			System.out.println("Can't create directory. Already exist ?");
 		}
 	}
-
+	
+	public List<Integer> selectCondEqual(SelectValues selectvalues, Condition cond, List<String> newTimes, List<String> newValues){
+	int size = selectvalues.getTimestamps().size();
+	List<Integer> index=new ArrayList<Integer>();
+	for(int j = 0; j < size ; j++){
+			if(cond.getField1().equals("time")) {
+				
+				if (selectvalues.getTimestamps().get(j).equals(cond.getField2())) {
+   					newTimes.add(selectvalues.getTimestamps().get(j));
+   					newValues.add(selectvalues.getValues().get(j));
+   					index.add(j);
+				}
+			}
+			
+			else if(cond.getField1().equals("temperature")) {
+   				if (selectvalues.getValues().get(j).equals(cond.getField2())) {
+   					newTimes.add(selectvalues.getTimestamps().get(j));
+   					newValues.add(selectvalues.getValues().get(j));
+   					index.add(j);
+   				}
+	   		}
+		}
+	return index;
+	}
+	
+	public List<Integer> selectCondDiff(SelectValues selectvalues, Condition cond, List<String> newTimes, List<String> newValues){
+	int size = selectvalues.getTimestamps().size();
+	List<Integer> index=new ArrayList<Integer>();
+	for(int j = 0; j < size ; j++){
+			if(cond.getField1().equals("time")) {
+				
+				if (!selectvalues.getTimestamps().get(j).equals(cond.getField2())) {
+   					newTimes.add(selectvalues.getTimestamps().get(j));
+   					newValues.add(selectvalues.getValues().get(j));
+   					index.add(j);
+				}
+			}
+			
+			else if(cond.getField1().equals("temperature")) {
+   				if (!selectvalues.getValues().get(j).equals(cond.getField2())) {
+   					newTimes.add(selectvalues.getTimestamps().get(j));
+   					newValues.add(selectvalues.getValues().get(j));
+   					index.add(j);
+   				}
+	   		}
+		}
+	return index;
+	}
+	
+	public List<Integer> selectCondLow(SelectValues selectvalues, Condition cond, List<String> newTimes, List<String> newValues){
+	int size = selectvalues.getTimestamps().size();
+	List<Integer> index=new ArrayList<Integer>();
+	for(int j = 0; j < size ; j++){
+			if(cond.getField1().equals("time")) {
+				
+				if (Timestamp.valueOf(selectvalues.getTimestamps().get(j)).before(Timestamp.valueOf(cond.getField2()))) { // == Timestamp stocké < timestamp conditionnel
+   					newTimes.add(selectvalues.getTimestamps().get(j));
+   					newValues.add(selectvalues.getValues().get(j));
+   					index.add(j);
+				}
+			}
+			else if(cond.getField1().equals("temperature")) {
+				if (Float.parseFloat(selectvalues.getValues().get(j)) < Float.parseFloat(cond.getField2())) {
+   					newTimes.add(selectvalues.getTimestamps().get(j));
+   					newValues.add(selectvalues.getValues().get(j));
+   					index.add(j);
+   				}
+	   		}
+		}
+	return index;
+	}
+	
+	public List<Integer> selectCondHigh(SelectValues selectvalues, Condition cond, List<String> newTimes, List<String> newValues){
+	int size = selectvalues.getTimestamps().size();
+	List<Integer> index=new ArrayList<Integer>();
+	for(int j = 0; j < size ; j++){
+		if(cond.getField1().equals("time")) {
+			if (Timestamp.valueOf(selectvalues.getTimestamps().get(j)).after(Timestamp.valueOf(cond.getField2()))) {
+				newTimes.add(selectvalues.getTimestamps().get(j));
+				newValues.add(selectvalues.getValues().get(j));
+				index.add(j);
+			}
+		}
+		
+		else if(cond.getField1().equals("temperature")) {
+			if (Float.parseFloat(selectvalues.getValues().get(j)) > Float.parseFloat(cond.getField2())) {
+				newTimes.add(selectvalues.getTimestamps().get(j));
+				newValues.add(selectvalues.getValues().get(j));
+				index.add(j);
+			}
+   		}
+	}
+	return index;
+	}
+	
 	
 }
