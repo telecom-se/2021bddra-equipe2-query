@@ -102,7 +102,6 @@ public class QueryParser {
 		} else if (resultCondition instanceof Condition) {
 			mySelect.setCondition((Condition)resultCondition);
 		} else {
-			System.out.println("ici");
 			return null;
 		}
 
