@@ -81,20 +81,24 @@ public class QueryParser {
 
 		String table = selectMatcher.group(2).toString();
 
-		SelectQuery mySelect = new SelectQuery();
+<<<<<<< HEAD
 		String conditions = null;
+		if (!selectMatcher.group(3).isEmpty()) {
+			conditions = selectMatcher.group(3).toString();
+=======
+		SelectQuery mySelect = new SelectQuery();
+		String condition = null;
 
 		if (selectMatcher.group(3) != null && !selectMatcher.group(3).trim().isEmpty()) {
-			conditions = selectMatcher.group(3).toString();
+			condition = selectMatcher.group(3).toString();
+			mySelect.setConditions(condition);
+>>>>>>> 399edf18a59c925f151807207efcbc9695c40dda
 		}
 
 		for (int i = 0; i < fields.length; i++) {
 			mySelect.addField(fields[i]);
 		}
-		
-		mySelect.setDbName(table.split("\\.")[0]);
-		mySelect.setTableName(table.split("\\.")[1]);
-		
+<<<<<<< HEAD
 		mySelect.setTableName(table);
 
 		Object resultCondition = andOrParser(conditions);
@@ -109,6 +113,11 @@ public class QueryParser {
 			System.out.println("ici");
 			return null;
 		}
+=======
+		mySelect.setDbName(table.split("\\.")[0]);
+		mySelect.setTableName(table.split("\\.")[1]);
+
+>>>>>>> 399edf18a59c925f151807207efcbc9695c40dda
 
 		return mySelect;
 

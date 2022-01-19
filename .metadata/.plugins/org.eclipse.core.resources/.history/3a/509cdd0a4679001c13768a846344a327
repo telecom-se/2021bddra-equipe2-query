@@ -82,10 +82,11 @@ public class QueryParser {
 		String table = selectMatcher.group(2).toString();
 
 		SelectQuery mySelect = new SelectQuery();
-		String conditions = null;
+		String condition = null;
 
 		if (selectMatcher.group(3) != null && !selectMatcher.group(3).trim().isEmpty()) {
-			conditions = selectMatcher.group(3).toString();
+			condition = selectMatcher.group(3).toString();
+			mySelect.setConditions(condition);
 		}
 
 		for (int i = 0; i < fields.length; i++) {

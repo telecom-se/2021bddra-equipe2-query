@@ -15,6 +15,14 @@ public class SelectQuery {
 	private AndCondition andConditions;
 	private OrCondition orConditions;
 
+
+	 
+	public SelectQuery(Collection<String> fields,String dbTableName,String conditions) {
+		this.fields=fields;
+
+	}
+	
+>>>>>>> 399edf18a59c925f151807207efcbc9695c40dda
 	public SelectQuery() {
 		this.fields = new ArrayList<String>();
 	}
