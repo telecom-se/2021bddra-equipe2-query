@@ -1,0 +1,47 @@
+package db.query;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import lombok.Data;
+
+@Data
+public class SelectQuery {
+
+	private Collection<String> fields;
+	private String tableName;
+<<<<<<< HEAD
+	private Condition condition;
+	private AndCondition andConditions;
+	private OrCondition orConditions;
+
+=======
+	private String dbName;
+	private String conditions;
+	 
+	public SelectQuery(Collection<String> fields,String dbTableName,String conditions) {
+		this.fields=fields;
+		this.tableName= dbTableName.split("\\.")[1];
+		this.conditions=conditions;
+		this.dbName=dbTableName.split("\\.")[0];;
+	}
+	
+>>>>>>> 399edf18a59c925f151807207efcbc9695c40dda
+	public SelectQuery() {
+		this.fields = new ArrayList<String>();
+	}
+
+	public void addField(String field) {
+		this.fields.add(field);
+	}
+
+	public SelectQuery(Collection<String> fields, String tableName, Condition condition, AndCondition andConditions,
+			OrCondition orConditions) {
+		super();
+		this.fields = fields;
+		this.tableName = tableName;
+		this.condition = condition;
+		this.orConditions = orConditions;
+		this.andConditions = andConditions;
+	}
+}
