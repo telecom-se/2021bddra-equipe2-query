@@ -1,0 +1,5 @@
+package db.controller;
+
+public class QueryController {
+
+}

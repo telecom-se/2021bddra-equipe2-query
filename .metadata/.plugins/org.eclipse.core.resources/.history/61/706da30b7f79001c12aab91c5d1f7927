@@ -1,0 +1,6 @@
+package Controller;
+
+//@RestController
+public class QueryController {
+
+}

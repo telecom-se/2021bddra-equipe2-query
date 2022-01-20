@@ -1,0 +1,28 @@
+package db.service;
+
+import org.springframework.stereotype.Service;
+
+import Error.QueryException;
+import db.query.QueryParser;
+import db.storage.Storage;
+
+@Service
+public class QueryService {
+
+	public Object computeQuery(String query) {
+		
+		QueryParser queryParser = new QueryParser();
+		
+		try {
+			Object parseQuery = queryParser.parseQuery(query);
+		} catch (QueryException e) {
+			return e;
+		}
+		
+		Storage storage = new Storage();
+		
+		storage.readDatas(parseQuery);
+		
+		return null;
+	}
+}

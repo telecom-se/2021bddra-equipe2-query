@@ -1,0 +1,16 @@
+package db.query.service;
+
+import org.springframework.stereotype.Service;
+
+import db.query.QueryParser;
+
+@Service
+public class QueryService {
+	public Object executeQuery(String query) {
+		
+		QueryParser.parseQuery(query);
+		
+		return query;
+		
+	}
+}

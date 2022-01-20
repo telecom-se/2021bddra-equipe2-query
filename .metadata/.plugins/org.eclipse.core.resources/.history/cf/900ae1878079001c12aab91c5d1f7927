@@ -1,0 +1,32 @@
+package Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import Error.QueryException;
+import db.query.QueryParser;
+
+@RestController
+public class QueryController {
+
+	@Autowired
+	QueryParser queryParser;
+	
+	@PostMapping("/query")
+	public Object responseToQuery(@RequestBody String query) {
+		
+		Object response = null;
+		
+		try {
+			Object response = queryParser.parseQuery(query);
+		} catch (QueryException e) {
+			return e;
+		}
+		
+		
+		return readDatas(response); ;
+	
+	}
+}

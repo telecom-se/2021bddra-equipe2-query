@@ -1,0 +1,6 @@
+package db.controller;
+
+@RestController
+public class QueryController {
+
+}

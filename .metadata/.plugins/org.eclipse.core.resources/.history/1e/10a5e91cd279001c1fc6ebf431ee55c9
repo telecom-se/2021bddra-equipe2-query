@@ -1,0 +1,5 @@
+package db.service;
+
+public class QueryService {
+
+}
