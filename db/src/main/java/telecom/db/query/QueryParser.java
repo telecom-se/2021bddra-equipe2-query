@@ -78,7 +78,9 @@ public class QueryParser {
 			throw new QueryException("no field");
 		}
 
-		String[] fields = selectMatcher.group(1).toString().split("\\s*,\\s*");
+		String field = selectMatcher.group(1).toString();
+
+
 
 		if (selectMatcher.group(2).isEmpty() || !selectMatcher.group(2).contains(".")) {
 			System.out.println("no table / bad name. Need database.table");
@@ -106,15 +108,15 @@ public class QueryParser {
 				return null;
 			}
 		}
-		
-		for (int i = 0; i < fields.length; i++) {
-			mySelect.addField(fields[i]);
-		}
 
+		if (field.toString().equals("temperature") || field.toString().equals("time") || field.toString().equals("*")) {
+			mySelect.addField(field);
+		}else {
+			throw new QueryException("bad fields. Can be only : *,temperature,time");
+		}
+		
 		mySelect.setDbName(table.split("\\.")[0]);
 		mySelect.setTableName(table.split("\\.")[1]);
-
-
 
 		return mySelect;
 
