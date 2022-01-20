@@ -147,31 +147,7 @@ public class Storage {
 			System.out.println("Only one condition detected");
 			List<String> newTimes = new ArrayList<String>();
 			List<String> newValues = new ArrayList<String>();
-			switch(query.getCondition().getOperator()){				
-		   		case OPERATOR_EQUAL: 
-		   			selectCondEqual(selectvalues, query.getCondition(), newTimes, newValues);
-			       break;
-		       case OPERATOR_DIFFERENT:
-		    	   selectCondDiff(selectvalues, query.getCondition(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER:
-		    	   selectCondLow(selectvalues, query.getCondition(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER:
-		    	   selectCondHigh(selectvalues, query.getCondition(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getCondition(), newTimes, newValues);
-		    	   selectCondLow(selectvalues, query.getCondition(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getCondition(), newTimes, newValues);
-		    	   selectCondHigh(selectvalues, query.getCondition(), newTimes, newValues);
-		           break; 
-		       default:
-		    	   System.out.println("Choix incorrect");
-		           break;
-		   }
+			doCalculate(selectvalues, query.getCondition(), newTimes, newValues);
 	    	selectvalues.setTimestamps(newTimes);
 	    	selectvalues.setValues(newValues);
 		}
@@ -186,31 +162,8 @@ public class Storage {
 			System.out.println("And condition detected");
 			List<String> newTimes = new ArrayList<String>();
 			List<String> newValues = new ArrayList<String>();
-			switch(query.getAndConditions().getCondition1().getOperator()){				
-		   		case OPERATOR_EQUAL: 
-		   			selectCondEqual(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-			       break;
-		       case OPERATOR_DIFFERENT:
-		    	   selectCondDiff(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER:
-		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER:
-		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
-		           break; 
-		       default:
-		    	   System.out.println("Choix incorrect");
-		           break;
-		   }
+			
+			doCalculate(selectvalues, query.getAndConditions().getCondition1(), newTimes, newValues);
 			
 			// Let's update our Timestamps and Values with the new values we get from the first condition.
 			selectvalues.getTimestamps().clear();
@@ -223,33 +176,9 @@ public class Storage {
 	    	newValues.clear();
 	    	
 	    	// Now we gonna do the second condition with the new values
+	    	doCalculate(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
 	    	
-			switch(query.getAndConditions().getCondition2().getOperator()){				
-		   		case OPERATOR_EQUAL: 
-		   			selectCondEqual(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-			       break;
-		       case OPERATOR_DIFFERENT:
-		    	   selectCondDiff(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER:
-		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER:
-		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		    	   selectCondLow(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		    	   selectCondHigh(selectvalues, query.getAndConditions().getCondition2(), newTimes, newValues);
-		           break; 
-		       default:
-		    	   System.out.println("Choix incorrect");
-		           break;
-			}
-			
+	    	//update values
 			selectvalues.setTimestamps(newTimes);
 			selectvalues.setValues(newValues);
 		}
@@ -259,66 +188,19 @@ public class Storage {
 			// Alors la la galère c'est que le OR peut prendre si au moins une condition est valide.
 			// Le truc c'est que si les deux conditions sont vraies, on va add deux fois la même valeurs ........
 			
-			System.out.println("And condition detected");
+			System.out.println("OR condition detected");
 			List<String> newTimes = new ArrayList<String>();
 			List<String> newValues = new ArrayList<String>();
 			List<Integer> indexToRemove = new ArrayList<Integer>();
-			switch(query.getOrConditions().getCondition1().getOperator()){				
-		   		case OPERATOR_EQUAL: 
-		   			indexToRemove.addAll(selectCondEqual(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-			       break;
-		       case OPERATOR_DIFFERENT:
-		    	   indexToRemove.addAll(selectCondDiff(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		           break;
-		       case OPERATOR_LOWER:
-		    	   indexToRemove.addAll(selectCondLow(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		           break;
-		       case OPERATOR_HIGHER:
-		    	   indexToRemove.addAll(selectCondHigh(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		           break;
-		       case OPERATOR_LOWER_OR_EQUAL:
-		    	   indexToRemove.addAll(selectCondEqual(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		    	   indexToRemove.addAll(selectCondLow(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		           break;
-		       case OPERATOR_HIGHER_OR_EQUAL:
-		    	   indexToRemove.addAll(selectCondEqual(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		    	   indexToRemove.addAll(selectCondHigh(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues));
-		           break; 
-		       default:
-		    	   System.out.println("Choix incorrect");
-		           break;
-		   }
+			
+			doCalculateOr(selectvalues, query.getOrConditions().getCondition1(), newTimes, newValues, indexToRemove);
 			
 			for(int j = 0; j < indexToRemove.size()-1 ; j++){
 				selectvalues.getTimestamps().remove(indexToRemove.get(j));
 				selectvalues.getValues().remove(indexToRemove.get(j));
 			}
 	    	
-			switch(query.getOrConditions().getCondition2().getOperator()){				
-		   		case OPERATOR_EQUAL: 
-		   			selectCondEqual(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-			       break;
-		       case OPERATOR_DIFFERENT:
-		    	   selectCondDiff(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER:
-		    	   selectCondLow(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER:
-		    	   selectCondHigh(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_LOWER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		    	   selectCondLow(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		           break;
-		       case OPERATOR_HIGHER_OR_EQUAL:
-		    	   selectCondEqual(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		    	   selectCondHigh(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
-		           break; 
-		       default:
-		    	   System.out.println("Choix incorrect");
-		           break;
-			}
+			doCalculate(selectvalues, query.getOrConditions().getCondition2(), newTimes, newValues);
 			
 			selectvalues.setTimestamps(newTimes);
 			selectvalues.setValues(newValues);
@@ -489,5 +371,63 @@ public class Storage {
 		if (Files.notExists(dbPath)) {
 			throw new StorageException("DB doesn't exist.");
 		}
+	}
+	
+	
+	/* Functions for using the right function according to the operator. */
+	public void doCalculate(SelectValues selectvalues, Condition condition, List<String> newTimes, List<String> newValues){
+		switch(condition.getOperator()){				
+   		case OPERATOR_EQUAL: 
+   			selectCondEqual(selectvalues, condition, newTimes, newValues);
+	       break;
+       case OPERATOR_DIFFERENT:
+    	   selectCondDiff(selectvalues, condition, newTimes, newValues);
+           break;
+       case OPERATOR_LOWER:
+    	   selectCondLow(selectvalues, condition, newTimes, newValues);
+           break;
+       case OPERATOR_HIGHER:
+    	   selectCondHigh(selectvalues, condition, newTimes, newValues);
+           break;
+       case OPERATOR_LOWER_OR_EQUAL:
+    	   selectCondEqual(selectvalues, condition, newTimes, newValues);
+    	   selectCondLow(selectvalues, condition, newTimes, newValues);
+           break;
+       case OPERATOR_HIGHER_OR_EQUAL:
+    	   selectCondEqual(selectvalues, condition, newTimes, newValues);
+    	   selectCondHigh(selectvalues, condition, newTimes, newValues);
+           break; 
+       default:
+    	   System.out.println("Choix incorrect");
+           break;
+   }
+	}
+	
+	public void doCalculateOr(SelectValues selectvalues, Condition condition, List<String> newTimes, List<String> newValues, List<Integer> indexToRemove){
+		switch(condition.getOperator()){				
+   		case OPERATOR_EQUAL: 
+   			indexToRemove.addAll(selectCondEqual(selectvalues, condition, newTimes, newValues));
+	       break;
+       case OPERATOR_DIFFERENT:
+    	   indexToRemove.addAll(selectCondDiff(selectvalues, condition, newTimes, newValues));
+           break;
+       case OPERATOR_LOWER:
+    	   indexToRemove.addAll(selectCondLow(selectvalues, condition, newTimes, newValues));
+           break;
+       case OPERATOR_HIGHER:
+    	   indexToRemove.addAll(selectCondHigh(selectvalues, condition, newTimes, newValues));
+           break;
+       case OPERATOR_LOWER_OR_EQUAL:
+    	   indexToRemove.addAll(selectCondEqual(selectvalues, condition, newTimes, newValues));
+    	   indexToRemove.addAll(selectCondLow(selectvalues, condition, newTimes, newValues));
+           break;
+       case OPERATOR_HIGHER_OR_EQUAL:
+    	   indexToRemove.addAll(selectCondEqual(selectvalues, condition, newTimes, newValues));
+    	   indexToRemove.addAll(selectCondHigh(selectvalues, condition, newTimes, newValues));
+           break; 
+       default:
+    	   System.out.println("Choix incorrect");
+           break;
+   }
 	}
 }
