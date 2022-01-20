@@ -59,7 +59,7 @@ public class Main {
 
 		*/
 //EXEMPLE OF SEQUENCE : (create database --> create table --> insert --> select
-
+		
 		// Exemple of create database :
 		String queryCreateDatabase = "CREATE DATABASE brichieeee;";
 		System.out.println(queryparser.queryType(queryCreateDatabase));
@@ -70,14 +70,12 @@ public class Main {
 		String queryCreateTable = "CREATE TABLE brichieeee.table2;";
 		System.out.println(queryparser.createParser(queryCreateTable));
 		S.readDatas(queryparser.createParser(queryCreateTable));
-		/*
-		
+
 		// Exemple of INSERT INTO :
 		String queryInsertTest = "INSERT INTO brichieeee.table2 VALUES (2013-12-12 22:0:0,32);";
 		System.out.println(queryparser.insertParser(queryInsertTest));	
 		S.readDatas(queryparser.insertParser(queryInsertTest));
-		*/
-		
+
 		// Exemple of SELECT : (where not implemented rn)
 		String querySelectTest = "SELECT * FROM brichieeee.table2;";
 		System.out.println(queryparser.selectParser(querySelectTest));	
@@ -95,7 +93,6 @@ public class Main {
 		String querySelectTest3 = "SELECT * FROM brichieeee.table2 WHERE time>=2013-12-12 23:00:00.0 OR temperature>30;";
 		System.out.println(queryparser.selectParser(querySelectTest3));	
 		System.out.println(S.readDatas(queryparser.selectParser(querySelectTest3)));
-		
 	}
 
 }

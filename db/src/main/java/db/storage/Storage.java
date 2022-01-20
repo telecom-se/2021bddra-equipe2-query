@@ -50,8 +50,9 @@ public class Storage {
 
 	public void storeInsertQuery(InsertQuery query) throws StorageException, IOException{
 		
-		// For delta delta compression we need to read the files and get the two firsts rows, if exist.
+		checkForPaths(query.getDbName(), query.getTableName());
 		
+		// For delta delta compression we need to read the files and get the two firsts rows, if exist.
 		SelectValues selectvalues = new SelectValues();
 	    int i = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt"))) {
@@ -90,6 +91,7 @@ public class Storage {
 
 	public Object storeSelectQuery(SelectQuery query) throws StorageException, FileNotFoundException, IOException{
 
+		checkForPaths(query.getDbName(), query.getTableName());
 		// Good way to read datas from a txt, line by line. check : https://stackoverflow.com/questions/5868369/how-can-i-read-a-large-text-file-line-by-line-using-java
 		SelectValues selectvalues = new SelectValues();
 		String col1 = "", col2 = "";
@@ -347,6 +349,7 @@ public class Storage {
 	
 	public void storeCreateSeriesQuery(CreateQuery query) throws StorageException{
 		// Create a TXT file at ./storeDB/dbName/seriesName.txt
+		checkForPaths(query.getDbName());
 		try {
 			File myObj = new File("./src/main/java/db/storeDB/" + query.getDbName()  + "/" + query.getTableName() + ".txt");
 			if (myObj.createNewFile()) {
@@ -354,6 +357,7 @@ public class Storage {
 			} 
 			else {
 				System.out.println("File already exists.");
+				throw new StorageException("table already exist.");
 			}
 		} 
 		catch (IOException e) {
@@ -366,6 +370,7 @@ public class Storage {
 		// Create a directory at ./storeDB/dbName
 		if (!(new File("./src/main/java/db/storeDB/" + query.getDbName()).mkdirs())) {
 			System.out.println("Can't create directory. Already exist ?");
+			throw new StorageException("Database already exist.");
 		}
 	}
 	
@@ -464,4 +469,25 @@ public class Storage {
 	}
 	
 	
+	/* Checking if paths exists functions */
+	public void checkForPaths(String dbName, String tableName) throws StorageException
+	{
+		Path dbPath = Paths.get("./src/main/java/db/storeDB/" + dbName);
+		if (Files.notExists(dbPath)) {
+			throw new StorageException("DB doesn't exist.");
+		}
+		
+		Path tablePath = Paths.get("./src/main/java/db/storeDB/" + dbName  + "/" + tableName + ".txt");
+		if (Files.notExists(tablePath)) {
+			throw new StorageException("TABLE doesn't exist.");
+		}
+	}
+	
+	public void checkForPaths(String dbName) throws StorageException
+	{
+		Path dbPath = Paths.get("./src/main/java/db/storeDB/" + dbName);
+		if (Files.notExists(dbPath)) {
+			throw new StorageException("DB doesn't exist.");
+		}
+	}
 }
