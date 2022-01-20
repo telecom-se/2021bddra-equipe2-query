@@ -19,16 +19,16 @@ public class QueryService {
 		
 		try {
 			Object parseQuery = queryParser.parseQuery(query);
-			Object result = storage.readDatas(parseQuery);
-			return result;
-//			return parseQuery;
+//			Object result = storage.readDatas(parseQuery);
+//			return result;
+			return parseQuery;
 		} catch (QueryException e) {
 			return e;
 		} 
-		catch (StorageException e) {
-			return e;
-		} catch (IOException e) {
-			return e;
-		}
+//		catch (StorageException e) {
+//			return e;
+//		} catch (IOException e) {
+//			return e;
+//		}
 	}
 }

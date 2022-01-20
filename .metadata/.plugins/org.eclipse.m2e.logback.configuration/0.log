@@ -2541,3 +2541,7 @@
 2022-01-20 11:11:49,802 [Worker-62: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\thomas\Documents\Travail\S9\advanced database\projet\2021bddra-equipe2-query\db\src\main\resources
 2022-01-20 11:11:49,804 [Worker-62: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2022-01-20 11:11:49,804 [Worker-62: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-01-20 11:11:49,804 [Worker-62: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\thomas\Documents\Travail\S9\advanced database\projet\2021bddra-equipe2-query\db\src\test\resources
+2022-01-20 11:16:13,991 [Worker-66: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-01-20 11:16:13,992 [Worker-66: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-01-20 11:16:13,992 [Worker-66: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\thomas\Documents\Travail\S9\advanced database\projet\2021bddra-equipe2-query\db\src\main\resources
