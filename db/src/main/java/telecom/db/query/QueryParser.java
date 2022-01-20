@@ -145,6 +145,10 @@ public class QueryParser {
 
 		String[] values = insertMatcher.group(2).toString().split("\\s*,\\s*");
 
+		if(values.length<=1) {
+			throw new QueryException("bad insert");
+		}
+		
 		if (values[0].isEmpty()) {
 			System.out.println("no timestamp");
 			throw new QueryException("no timestamp");
