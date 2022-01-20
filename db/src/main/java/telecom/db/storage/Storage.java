@@ -11,9 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.sql.Timestamp;
-
 import telecom.db.error.StorageException;
 import telecom.db.query.*;
 import lombok.Data;
@@ -218,12 +218,14 @@ public class Storage {
 
         else if (firstElement.equals("time"))
         {
-        	return selectvalues.getTimestamps();
+        	selectvalues.setTimestamps(Arrays.asList("value"));
+        	return selectvalues;
         }
 
         else if (firstElement.equals("temperature"))
         {
-        	return selectvalues.getValues();
+        	selectvalues.setValues(Arrays.asList("temperature"));
+        	return selectvalues;
         }
         
         // means it failed
