@@ -1,5 +1,6 @@
 package telecom.db.query;
 
+//Classe définissant les différents types d'opérateurs possibles
 public enum Operator {
 	OPERATOR_EQUAL,
 	OPERATOR_DIFFERENT,

@@ -2,6 +2,7 @@ package telecom.db.query;
 
 import lombok.Data;
 
+//Classe définissant une query de type DROP TABLE
 @Data
 public class DropQuery {
 	

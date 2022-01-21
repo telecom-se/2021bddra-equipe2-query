@@ -2,6 +2,7 @@ package telecom.db.query;
 
 import lombok.Data;
 
+//Classe définissant une condition avec un or
 @Data
 public class OrCondition {
 	private Condition condition1;

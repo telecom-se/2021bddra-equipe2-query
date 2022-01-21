@@ -9,6 +9,13 @@ import telecom.db.error.StorageException;
 import telecom.db.query.QueryParser;
 import telecom.db.storage.Storage;
 
+/**
+ * Service utilisé par le controller 
+ * 
+ * Prend en argument la query en string 
+ *
+ * @return le résultat de la query
+ */
 @Service
 public class QueryService {
 
@@ -21,7 +28,6 @@ public class QueryService {
 			Object parseQuery = queryParser.parseQuery(query);
 			Object result = storage.readDatas(parseQuery);
 			return result;
-//			return parseQuery;
 		} catch (QueryException e) {
 			return e;
 		} 

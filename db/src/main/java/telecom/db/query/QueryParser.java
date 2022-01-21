@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import lombok.Data;
 import telecom.db.error.QueryException;
 
+//Classe comportant les fonctions permettant de parser un query de type String 
 @Data
 @Service
 public class QueryParser {
 	
-
+	//Routine to parse Query 
+	//Retourne un objet différent selon la query
 	public Object parseQuery(String query) throws QueryException {
 
 		Pattern typePattern = Pattern.compile("(select|insert|create table|create database|delete|drop)+\\s+.*?", Pattern.CASE_INSENSITIVE);
@@ -62,6 +64,7 @@ public class QueryParser {
 		}
 	}
 
+	//Use to parse Select Query
 	public SelectQuery selectParser(String query) throws QueryException {
 
 		Pattern selectPattern = Pattern.compile("select\\s+(.*?)\\s*+from\\s*+(.*?)(?:\\s*+where\\s*+(.*?))?;",
@@ -122,6 +125,7 @@ public class QueryParser {
 
 	}
 
+	//Use to parse Insert Query
 	public InsertQuery insertParser(String query) throws QueryException {
 
 		Pattern insertPattern = Pattern.compile("insert\\s*+into\\s*+(.*?)\\s*+values\\s*+\\((.*?)\\);",
@@ -180,6 +184,7 @@ public class QueryParser {
 		return myInsert;
 	}
 	
+	//Use to parse Create Table Query
 	public CreateQuery createParser(String query) throws QueryException {
 
 		Pattern createPattern = Pattern.compile("create\\s*+table\\s*+(.*?);",
@@ -200,6 +205,7 @@ public class QueryParser {
 
 	}
 	
+	//Use to parse Create Database Query
 	public CreateDatabaseQuery createDatabaseParser(String query) throws QueryException {
 
 		Pattern createPattern = Pattern.compile("create\\s*+database\\s*+(.*?);",
@@ -220,6 +226,7 @@ public class QueryParser {
 
 	}
 	
+	//Use to parse Drop Query
 	public DropQuery dropParser(String query) throws QueryException {
 
 		Pattern dropPattern = Pattern.compile("drop\\s*+table\\s*+(.*?);",
@@ -240,6 +247,7 @@ public class QueryParser {
 
 	}
 	
+	//Use to parse Delete Query
 	public DeleteQuery deleteParser(String query) throws QueryException {
 
 		Pattern deletePattern = Pattern.compile("delete\\s*+from\\s*+(.*?)(?:\\s*+where\\s*+(.*?))?;",
@@ -275,6 +283,7 @@ public class QueryParser {
 
 	}
 
+	//Use to parse a condition in a Query like "a=b" or "a<=b" or "a!=b" or ...
 	public Condition conditionParser(String condition) throws QueryException {
 		
 		//verification du bon nombre d'elements
@@ -380,6 +389,7 @@ public class QueryParser {
 
 	}
 
+	//Use to parse and or or condition Query, limited to 1 and or 1 or
 	public Object andOrParser(String conditions) throws QueryException {
 
 		// Verifier qu'il y a qu'un ou 0 "and" ou "or
@@ -426,5 +436,4 @@ public class QueryParser {
 		throw new QueryException("bad condition with " + andOrCondition);
 	}
 
-	
 }

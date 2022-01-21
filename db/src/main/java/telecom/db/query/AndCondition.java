@@ -1,9 +1,8 @@
 package telecom.db.query;
 
-import java.util.Collection;
-
 import lombok.Data;
 
+//Classe définissant une condition and
 @Data
 public class AndCondition {
 	private Condition condition1;

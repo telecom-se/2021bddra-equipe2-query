@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+//Classe définissant une query de type INSERT INTO
 @Data
 public class InsertQuery {
 	

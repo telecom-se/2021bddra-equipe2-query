@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import lombok.Data;
 
+//Classe définissant une query de type SELECT
 @Data
 public class SelectQuery {
 

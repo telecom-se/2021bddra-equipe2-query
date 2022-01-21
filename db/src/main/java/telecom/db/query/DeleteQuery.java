@@ -1,9 +1,8 @@
 package telecom.db.query;
 
-import java.util.Collection;
-
 import lombok.Data;
 
+//Classe définissant une query de type DELETE
 @Data
 public class DeleteQuery {
 	private String tableName;

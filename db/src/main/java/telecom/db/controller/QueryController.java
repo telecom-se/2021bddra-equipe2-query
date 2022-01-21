@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import telecom.db.service.QueryService;
 
+
 @RestController
 public class QueryController {
 
 	@Autowired
 	QueryService queryService;
 	
+	//Définition de la requetes POST
 	@PostMapping("/query")
 	public Object parseComputeQuery(@RequestBody String query) {
 		
